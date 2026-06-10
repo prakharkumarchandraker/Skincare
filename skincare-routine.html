@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skincare Routine</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #f2f2f2; padding: 12px; color: #111; font-size: 13px; }
+
+  h1 { font-size: 18px; font-weight: 900; text-align: center; letter-spacing: 0.04em; margin-bottom: 12px; color: #111; }
+
+  #today-card { border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.13); }
+  #today-header { padding: 12px 16px 10px; display: flex; align-items: center; gap: 10px; }
+  #today-header .big-icon { font-size: 28px; }
+  #today-header .label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; opacity: 0.7; }
+  #today-header .title { font-size: 17px; font-weight: 900; line-height: 1.2; }
+  #today-header .subtitle { font-size: 11px; font-weight: 500; margin-top: 2px; opacity: 0.75; }
+  #today-steps { padding: 4px 0 8px; background: white; }
+
+  .tstep { display: grid; grid-template-columns: 28px 1fr; gap: 8px; padding: 8px 14px; border-bottom: 1px solid #f0f0f0; align-items: start; }
+  .tstep:last-child { border-bottom: none; }
+  .tnum { width: 24px; height: 24px; border-radius: 50%; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .tsname { font-size: 13px; font-weight: 700; line-height: 1.3; }
+  .tsdet { font-size: 11.5px; color: #444; margin-top: 2px; line-height: 1.5; }
+  .tsdet b { color: #111; font-weight: 600; }
+  .twait { display: inline-block; background: #E3F2FD; color: #0D47A1; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-top: 4px; }
+
+  .mode-am #today-header { background: #FFF3CD; }
+  .mode-am #today-header .title { color: #856404; }
+  .mode-am .tnum { background: #FFF3CD; color: #856404; }
+  .mode-pm #today-header { background: #EDE7F6; }
+  .mode-pm #today-header .title { color: #4527A0; }
+  .mode-pm .tnum { background: #EDE7F6; color: #4527A0; }
+  .mode-rest #today-header { background: #E8F5E9; }
+  .mode-rest #today-header .title { color: #2E7D32; }
+  .mode-rest .tnum { background: #E8F5E9; color: #2E7D32; }
+
+  .section { background: white; border-radius: 14px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.07); }
+  .sec-header { padding: 10px 14px; display: flex; align-items: center; gap: 8px; }
+  .sec-header h2 { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; }
+  .am .sec-header { background: #FFF3CD; } .am .sec-header h2 { color: #856404; }
+  .pm .sec-header { background: #EDE7F6; } .pm .sec-header h2 { color: #4527A0; }
+  .body-sec .sec-header { background: #E8F5E9; } .body-sec .sec-header h2 { color: #2E7D32; }
+  .rules-sec .sec-header { background: #FFEBEE; } .rules-sec .sec-header h2 { color: #C62828; }
+
+  .step { display: grid; grid-template-columns: 26px 1fr; gap: 8px; padding: 9px 14px; border-bottom: 1px solid #f0f0f0; align-items: start; }
+  .step:last-child { border-bottom: none; }
+  .num { width: 22px; height: 22px; border-radius: 50%; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .am .num { background: #FFF3CD; color: #856404; }
+  .pm .num { background: #EDE7F6; color: #4527A0; }
+  .body-sec .num { background: #E8F5E9; color: #2E7D32; }
+  .sname { font-size: 13px; font-weight: 700; line-height: 1.3; }
+  .sdet { font-size: 11.5px; color: #444; margin-top: 2px; line-height: 1.5; }
+  .sdet b { color: #111; font-weight: 600; }
+  .wait { display: inline-block; background: #E3F2FD; color: #0D47A1; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-top: 4px; }
+  .day-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 6px; margin: 8px 14px 4px; background: #EDE7F6; color: #4527A0; }
+  .rule { display: flex; gap: 8px; padding: 8px 14px; border-bottom: 1px solid #f5f5f5; align-items: flex-start; }
+  .rule:last-child { border-bottom: none; }
+  .rule-icon { font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .rule-text { font-size: 11.5px; line-height: 1.5; color: #333; }
+  .rule-text b { color: #C62828; font-weight: 700; }
+  .table-wrap { overflow-x: auto; padding: 8px 14px 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  th { background: #EDE7F6; color: #4527A0; font-weight: 800; padding: 6px 8px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+  td { padding: 6px 8px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-weight: 700; white-space: nowrap; }
+  .tag-b { background: #FFF3E0; color: #E65100; border-radius: 4px; padding: 1px 5px; font-size: 10px; font-weight: 700; }
+  .tag-c { background: #E3F2FD; color: #0D47A1; border-radius: 4px; padding: 1px 5px; font-size: 10px; font-weight: 700; }
+  .tag-r { background: #E8F5E9; color: #2E7D32; border-radius: 4px; padding: 1px 5px; font-size: 10px; font-weight: 700; }
+  .divider { text-align: center; font-size: 10px; font-weight: 700; color: #999; letter-spacing: 0.08em; text-transform: uppercase; margin: 16px 0 10px; }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .section, #today-card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>🧴 My Skincare Routine</h1>
+
+<!-- TODAY SMART CARD -->
+<div id="today-card">
+  <div id="today-header">
+    <div class="big-icon" id="today-icon">⏳</div>
+    <div class="head-text">
+      <div class="label">Right Now</div>
+      <div class="title" id="today-title">Loading…</div>
+      <div class="subtitle" id="today-subtitle"></div>
+    </div>
+  </div>
+  <div id="today-steps"></div>
+</div>
+
+<div class="divider">── Full Reference Below ──</div>
+
+<!-- MORNING -->
+<div class="section am">
+  <div class="sec-header"><span>☀️</span><h2>Morning — Every Day</h2></div>
+  <div class="step"><div class="num">1</div><div><div class="sname">Dot & Key Face Wash</div><div class="sdet">Pea-size · Full face · 30–60 sec · Pat dry</div><span class="wait">⏱ Wait 5 min</span></div></div>
+  <div class="step"><div class="num">2</div><div><div class="sname">Minimalist Niacinamide 10%</div><div class="sdet">3–4 drops · Full face · Pat gently</div><span class="wait">⏱ Wait 2 min</span></div></div>
+  <div class="step"><div class="num">3</div><div><div class="sname">Pond's Hydra Miracle (Hyaluronic+Salicylic)</div><div class="sdet">Chickpea-size · Full face</div><span class="wait">⏱ Wait 2 min</span></div></div>
+  <div class="step"><div class="num">4</div><div><div class="sname">Deconstruct SPF 55+ ⚠️ NEVER SKIP</div><div class="sdet">2 finger-lengths · Full face + neck · Even indoors</div></div></div>
+</div>
+
+<!-- NIGHT -->
+<div class="section pm">
+  <div class="sec-header"><span>🌙</span><h2>Night — Weekly Schedule</h2></div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Day</th><th>Active</th><th>Moisturizer</th></tr>
+      <tr><td>Mon</td><td><span class="tag-b">Azelaic Acid</span></td><td>Garnier N.Fresh</td></tr>
+      <tr><td>Tue</td><td><span class="tag-c">BHA 2%</span></td><td>Garnier N.Fresh</td></tr>
+      <tr><td>Wed</td><td><span class="tag-b">Azelaic Acid</span></td><td>Garnier N.Fresh</td></tr>
+      <tr><td>Thu</td><td><span class="tag-c">BHA 2%</span></td><td>Garnier N.Fresh</td></tr>
+      <tr><td>Fri</td><td><span class="tag-b">Azelaic Acid</span></td><td>Garnier N.Fresh</td></tr>
+      <tr><td>Sat</td><td><span class="tag-c">BHA 2%</span></td><td>Garnier N.Fresh</td></tr>
+      <tr><td>Sun</td><td><span class="tag-r">Rest 🌿</span></td><td>Garnier N.Fresh</td></tr>
+    </table>
+  </div>
+
+  <div class="day-badge">🟠 Azelaic nights (Mon · Wed · Fri)</div>
+  <div class="step"><div class="num">1</div><div><div class="sname">Dot & Key Face Wash · Pat dry</div><span class="wait">⏱ Wait 5 min</span></div></div>
+  <div class="step"><div class="num">2</div><div><div class="sname">Aziderm 10% Azelaic Acid</div><div class="sdet">Tiny dot · Spots + forehead dark patch only · Dab, don't spread</div><span class="wait">⏱ Wait 5 min</span></div></div>
+  <div class="step"><div class="num">3</div><div><div class="sname">Garnier Niacinamide Fresh &amp; Plump</div><div class="sdet">Chickpea-size · Full face · Works on spots overnight</div></div></div>
+
+  <div class="day-badge">🔵 BHA nights (Tue · Thu · Sat)</div>
+  <div class="step"><div class="num">1</div><div><div class="sname">Dot & Key Face Wash · Pat dry</div><span class="wait">⏱ Wait 5 min</span></div></div>
+  <div class="step"><div class="num">2</div><div><div class="sname">CosIQ BHA 2% Emulsion</div><div class="sdet">1 pump · Full face, focus nose · <b>LEAVE ON — do NOT rinse</b></div><span class="wait">⏱ Wait 10 min</span></div></div>
+  <div class="step"><div class="num">3</div><div><div class="sname">Garnier Niacinamide Fresh &amp; Plump</div><div class="sdet">Chickpea-size · Full face</div></div></div>
+
+  <div class="day-badge">🌿 Rest night (Sun)</div>
+  <div class="step"><div class="num">1</div><div><div class="sname">Dot & Key Face Wash · Pat dry</div></div></div>
+  <div class="step"><div class="num">2</div><div><div class="sname">Garnier Niacinamide Fresh &amp; Plump</div><div class="sdet">Chickpea-size · Full face · Skin rests, cream works overnight</div></div></div>
+</div>
+
+<!-- BODY -->
+<div class="section body-sec">
+  <div class="sec-header"><span>🧴</span><h2>Body — After Shower Daily</h2></div>
+  <div class="step"><div class="num">1</div><div><div class="sname">Bake Lactic+Azelaic Lotion</div><div class="sdet"><b>Where:</b> Chest, back, shoulders · Generous on damp skin</div><span class="wait">⏱ 5 min before dressing</span></div></div>
+  <div class="step"><div class="num">2</div><div><div class="sname">Vaseline Gluta-Hya SPF 50 (going outside)</div><div class="sdet">Arms, neck, exposed skin · Thin even layer</div></div></div>
+  <div class="step"><div class="num">3</div><div><div class="sname">Chemist at Play AHA Roll-on</div><div class="sdet">Underarms only · After shower on dry skin</div></div></div>
+  <div class="step"><div class="num">4</div><div><div class="sname">Nivea Body Milk</div><div class="sdet">Legs + elbows only · <b>⚠️ NOT on back/chest</b></div></div></div>
+</div>
+
+<!-- RULES — simplified -->
+<div class="section rules-sec">
+  <div class="sec-header"><span>⚠️</span><h2>Only 3 Rules That Matter</h2></div>
+  <div class="rule"><div class="rule-icon">☀️</div><div class="rule-text"><b>SPF every single morning.</b> Cloudy, indoors, always. This is the most important step in the entire routine.</div></div>
+  <div class="rule"><div class="rule-icon">🚿</div><div class="rule-text"><b>CosIQ BHA is LEAVE-ON.</b> Apply and go to sleep. Never rinse it off.</div></div>
+  <div class="rule"><div class="rule-icon">🤚</div><div class="rule-text"><b>Don't squeeze nose spots.</b> BHA dissolves them over 4–6 weeks. Squeezing causes scarring.</div></div>
+  <div class="rule"><div class="rule-icon">⏳</div><div class="rule-text">Results: Nose → 4–6 wks · Dark patches → 8–12 wks · Body marks → 6–10 wks</div></div>
+</div>
+
+<script>
+const morningSteps = [
+  { name: "Dot & Key Face Wash", det: "Pea-size · Full face · 30–60 sec · Pat dry", wait: "⏱ Wait 5 min" },
+  { name: "Minimalist Niacinamide 10%", det: "3–4 drops · Full face · Pat gently", wait: "⏱ Wait 2 min" },
+  { name: "Pond's Hydra Miracle (Hyaluronic+Salicylic)", det: "Chickpea-size · Full face", wait: "⏱ Wait 2 min" },
+  { name: "Deconstruct SPF 55+ ⚠️ NEVER SKIP", det: "2 finger-lengths · Full face + neck", wait: null }
+];
+
+const nightRoutines = {
+  azelaic: {
+    label: "Azelaic Acid Night",
+    steps: [
+      { name: "Dot & Key Face Wash · Pat dry", det: "", wait: "⏱ Wait 5 min" },
+      { name: "Aziderm 10% Azelaic Acid", det: "Tiny dot · Spots + forehead dark patch only · Dab only", wait: "⏱ Wait 5 min" },
+      { name: "Garnier Niacinamide Fresh & Plump", det: "Chickpea-size · Full face · Works on spots overnight", wait: null }
+    ]
+  },
+  bha: {
+    label: "BHA Night (Leave-On)",
+    steps: [
+      { name: "Dot & Key Face Wash · Pat dry", det: "", wait: "⏱ Wait 5 min" },
+      { name: "CosIQ BHA 2% Emulsion", det: "1 pump · Full face, focus nose · LEAVE ON — do NOT rinse", wait: "⏱ Wait 10 min" },
+      { name: "Garnier Niacinamide Fresh & Plump", det: "Chickpea-size · Full face", wait: null }
+    ]
+  },
+  rest: {
+    label: "Rest Night 🌿",
+    steps: [
+      { name: "Dot & Key Face Wash · Pat dry", det: "", wait: null },
+      { name: "Garnier Niacinamide Fresh & Plump", det: "Chickpea-size · Full face · Skin rests, cream works overnight", wait: null }
+    ]
+  }
+};
+
+// 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+const dayToNight = { 0:'rest', 1:'azelaic', 2:'bha', 3:'azelaic', 4:'bha', 5:'azelaic', 6:'bha' };
+const dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function renderSteps(steps, mode) {
+  const bg = mode==='am' ? '#FFF3CD' : mode==='rest' ? '#E8F5E9' : '#EDE7F6';
+  const col = mode==='am' ? '#856404' : mode==='rest' ? '#2E7D32' : '#4527A0';
+  return steps.map((s,i) => `
+    <div class="tstep">
+      <div class="tnum" style="background:${bg};color:${col}">${i+1}</div>
+      <div>
+        <div class="tsname">${s.name}</div>
+        ${s.det ? `<div class="tsdet">${s.det}</div>` : ''}
+        ${s.wait ? `<span class="twait">${s.wait}</span>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+function buildTodayCard() {
+  const now = new Date();
+  const h = now.getHours();
+  const day = now.getDay();
+  const timeStr = now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+  const card = document.getElementById('today-card');
+  const isMorning = h >= 3 && h < 15;
+
+  if (isMorning) {
+    card.className = 'mode-am';
+    document.getElementById('today-icon').textContent = '☀️';
+    document.getElementById('today-title').textContent = 'Morning Routine';
+    document.getElementById('today-subtitle').textContent = `${dayNames[day]} · ${timeStr}`;
+    document.getElementById('today-steps').innerHTML = renderSteps(morningSteps, 'am');
+  } else {
+    const key = dayToNight[day];
+    const data = nightRoutines[key];
+    card.className = key === 'rest' ? 'mode-rest' : 'mode-pm';
+    document.getElementById('today-icon').textContent = key === 'rest' ? '🌿' : '🌙';
+    document.getElementById('today-title').textContent = `Tonight: ${data.label}`;
+    document.getElementById('today-subtitle').textContent = `${dayNames[day]} · ${timeStr}`;
+    document.getElementById('today-steps').innerHTML = renderSteps(data.steps, key === 'rest' ? 'rest' : 'pm');
+  }
+}
+
+buildTodayCard();
+</script>
+</body>
+</html>
